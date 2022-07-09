@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/bill.dart';
@@ -14,6 +16,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectIndex = 0;
+  final PageStorageBucket bucket = PageStorageBucket();
 
   void _navigateBottomBar(int index) {
     setState(() {
@@ -21,53 +24,80 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  final List<Widget> _pages = [
-    OrderPage(),
-    BillPage(),
-    ProfilePage()
-  ];
+  final List<Widget> _pages = [const OrderPage(), BillPage(), ProfilePage()];
+
+  _goBack(BuildContext context) {
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Cari"),
-      ),
-      body: _pages[_selectIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
-              gap: 8,
-              activeColor: ColorBased.primary,
-              iconSize: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.black,
-              tabs: const [
-                GButton(icon: Icons.shopping_basket_outlined, text: "Order"),
-                GButton(icon: Icons.payment, text: "Bill"),
-                GButton(icon: Icons.account_circle, text: "Profile"),
-              ],
-              selectedIndex: _selectIndex,
-              onTabChange: _navigateBottomBar,
+    return WillPopScope(
+        child: Scaffold(
+            body: PageStorage(
+              bucket: bucket,
+              child: _pages[_selectIndex],
             ),
-          ),
-        ),
-      )
-    );
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 20,
+                    color: Colors.black.withOpacity(.1),
+                  )
+                ],
+              ),
+              child: SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+                  child: GNav(
+                    rippleColor: Colors.grey[300]!,
+                    hoverColor: Colors.grey[100]!,
+                    gap: 8,
+                    activeColor: ColorBased.primary,
+                    iconSize: 24,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    duration: const Duration(milliseconds: 400),
+                    tabBackgroundColor: Colors.grey[100]!,
+                    color: Colors.black,
+                    tabs: const [
+                      GButton(
+                          icon: Icons.shopping_basket_outlined, text: "Order"),
+                      GButton(icon: Icons.payment, text: "Bill"),
+                      GButton(icon: Icons.account_circle, text: "Profile"),
+                    ],
+                    selectedIndex: _selectIndex,
+                    onTabChange: _navigateBottomBar,
+                  ),
+                ),
+              ),
+            )),
+        onWillPop: () async {
+          bool keluar = false;
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: const Text("Anda akan keluar"),
+                    content: const Text("Anda yakin untuk keluar?"),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text("Ya",
+                            style: TextStyle(color: Colors.black38)),
+                        onPressed: () => exit(0),
+                      ),
+                      TextButton(
+                        child: const Text("Tidak"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          keluar = false;
+                        },
+                      ),
+                    ],
+                  ));
+          return keluar;
+        });
   }
 }
