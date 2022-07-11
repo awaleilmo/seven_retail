@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/auth/signin.dart';
 import 'package:seven_retail/pages/bill.dart';
+import 'package:seven_retail/pages/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'addOrder.dart';
@@ -228,7 +229,11 @@ class _OrderPage extends State<OrderPage> {
         Positioned(
             bottom: 5,
             child:TextButton(
-              onPressed: () {  },
+              onPressed: () {
+                Navigator.of(context).push(
+                  FadeRoute(page: const CartPage())
+                );
+              },
               style: TextButton.styleFrom(
                 primary: Colors.black87
               ),

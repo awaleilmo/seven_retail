@@ -64,6 +64,7 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
             'name': 'admins',
             'email': 'admin@gmail.com',
             'password': 'admin1234',
+            'phone': '0217772777'
           },
         ];
         var map = [

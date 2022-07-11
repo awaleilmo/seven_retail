@@ -44,16 +44,16 @@ class _AddOrderPage extends State<AddOrderPage> {
     final rawJson2 = prefs.getString('order');
     var users = jsonDecode(rawJson1!);
     var order = rawJson2 != null ? jsonDecode(rawJson2) : [], news = [];
-    int? id = 1;
+    int id = 1;
     for(int i  = 0; i < order.length; i++){
-      if(order.length == i){
-        id = (1 + order[i]['id']) as int?;
+      if(order.length == i+1){
+        id = order[i]['id']+1;
       }
     }
     var data = {
       "id": id,
       "user_id": users['id'],
-      "id_barang": widget.datas['id'],
+      "barang": widget.datas,
       "modifier": modifier,
       "note": notes.text,
       "qty": qty,
@@ -253,8 +253,7 @@ class _AddOrderPage extends State<AddOrderPage> {
           width: MediaQuery.of(context).size.width * 0.50,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10), color: Colors.black12),
-          child: Expanded(
-            child: Row(
+          child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
@@ -287,7 +286,6 @@ class _AddOrderPage extends State<AddOrderPage> {
                   ),
                 ],
               ),
-          ),
         ),
         const Padding(padding: EdgeInsets.only(top: 15)),
         TextButton(

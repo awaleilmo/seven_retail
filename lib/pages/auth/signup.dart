@@ -25,6 +25,7 @@ class _SignUpPage extends State<SignUpPage> {
   TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
   TextEditingController passC = TextEditingController();
+  TextEditingController phone = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _register() async {
@@ -50,6 +51,7 @@ class _SignUpPage extends State<SignUpPage> {
         'name': name.text,
         'email': email.text,
         'password': pass.text,
+        'phone': phone.text,
       };
     news.add(dataUser);
     String jsonEnd = jsonEncode(news);
@@ -273,6 +275,50 @@ class _SignUpPage extends State<SignUpPage> {
                           ),
                           borderRadius: BorderRadius.circular(7)),
                       hintText: "Password Confirm",
+                    ),
+                    style: const TextStyle(color: Colors.black54),
+                    autofocus: false,
+                  ),
+                ),
+                //phone number
+                const Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Is Required";
+                      }
+                      return null;
+                    },
+                    controller: phone,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                          const BorderSide(width: 1.5, color: Colors.black38),
+                          borderRadius: BorderRadius.circular(30)),
+                      prefixIcon: const Icon(Icons.lock, color: ColorBased.primary),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          passwordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: ColorBased.primary,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        },
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: ColorBased.primary,
+                            width: 2.5,
+                          ),
+                          borderRadius: BorderRadius.circular(7)),
+                      hintText: "Phone Number",
                     ),
                     style: const TextStyle(color: Colors.black54),
                     autofocus: false,
