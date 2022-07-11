@@ -114,8 +114,8 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
         String Rawuser = jsonEncode(dataUser);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final rawJsons = prefs.getString('dataUser') ?? '';
-        prefs.setBool('iklan', true);
         if(rawJsons == ''){
+          prefs.setBool('iklan', true);
           prefs.setString('data', rawJson);
           prefs.setString('dataUser', Rawuser);
         }

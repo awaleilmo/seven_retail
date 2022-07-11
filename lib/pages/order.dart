@@ -7,6 +7,7 @@ import 'package:seven_retail/pages/auth/signin.dart';
 import 'package:seven_retail/pages/bill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'addOrder.dart';
 import 'home.dart';
 
 class OrderPage extends StatefulWidget {
@@ -17,11 +18,11 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPage extends State<OrderPage> {
-  List datas = [];
-  bool iklan = false;
+  List datas = [], dataOrder = [];
+  int totalOrder = 0;
+  bool iklan = false, orderan = false;
   final ScrollController _scrollController = ScrollController();
   bool _loadingMore = false;
-  var formatter = NumberFormat('#,##,000');
 
   @override
   Future<void> menus() async {
@@ -31,9 +32,27 @@ class _OrderPage extends State<OrderPage> {
       });
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final rawJsons = prefs.getString('data') ?? '';
+      bool? login = prefs.getBool('login');
+      final rawUser = prefs.getString('userLogin');
+      final rawOrder = prefs.getString('order');
+      int length = 0;
+      var user = rawUser != null ? jsonDecode(rawUser) : [];
+      var order = rawOrder != null ? jsonDecode(rawOrder) : [];
+      for(int i = 0; i < order.length; i++){
+        if(order[i]['user_id'] == user['id']){
+          length++;
+        }
+      }
       List<dynamic> jsson = jsonDecode(rawJsons);
       var data = jsson;
       setState(() {
+        if(login == true && length > 0){
+          orderan = true;
+          dataOrder = order;
+          for(int i =0; i < order.length; i++){
+            totalOrder += (order[i]['total'] ?? 0) as int;
+          }
+        }
         iklan = prefs.getBool('iklan')!;
         _loadingMore = false;
         datas.addAll(data);
@@ -62,11 +81,11 @@ class _OrderPage extends State<OrderPage> {
     }
   }
 
-  Future<void> _add() async{
+  Future<void> _add(namaData) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool login = prefs.getBool('login') ?? false;
     Navigator.of(context).push(
-      FadeRoute(page: login ? BillPage() : SignInpage()),
+      FadeRoute(page: login ? AddOrderPage(datas:namaData) : const SignInpage()),
     );
   }
 
@@ -97,109 +116,158 @@ class _OrderPage extends State<OrderPage> {
           title: const Text("Order"),
           backgroundColor: Colors.white,
         ),
-        body: Stack(
-          alignment: AlignmentDirectional.center,
+        body: _body()
+
+    );
+  }
+
+  _body(){
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage("asset/image/header.jpg"),
-                          fit: BoxFit.cover)),
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomStart,
-                    children: const [
-                      Positioned(
-                          left: 20,
-                          bottom: 30,
-                          child: Text(
-                            "Seven Retail",
-                            style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black,
-                                    offset: Offset.zero,
-                                    blurRadius: 7,
-                                  )
-                                ]),
-                          )),
-                      Positioned(
-                        left: 20,
-                        bottom: 10,
-                        child: Text(
-                          "Grand Indonesia",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black,
-                                  offset: Offset.zero,
-                                  blurRadius: 7,
-                                )
-                              ]),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.only(top: 5)),
-                Expanded(
-                  child: RefreshIndicator(
-                    child: _list(),
-                    onRefresh: _refreshMenu,
-                  ),
-                ),
-              ],
-            ),
-            iklan
-                ? Column(
-                    children: [
-                      const Padding(padding: EdgeInsets.only(top: 140)),
-                      Padding(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.65, bottom: 2),
-                        child: TextButton(
-                          child: Container(
-                            height: 25,
-                            width: 25,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              iklan = false;
-                              _iklanClose();
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.70,
-                        height: MediaQuery.of(context).size.height * 0.40,
-                        child: Image.asset(
-                          "asset/image/iklan.jpg",
-                          fit: BoxFit.fill,
-                        ),
-                      )
-                    ],
+
+            Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("asset/image/header.jpg"),
+                      fit: BoxFit.cover)),
+              child: Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: const [
+                  Positioned(
+                      left: 20,
+                      bottom: 30,
+                      child: Text(
+                        "Seven Retail",
+                        style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset.zero,
+                                blurRadius: 7,
+                              )
+                            ]),
+                      )),
+                  Positioned(
+                    left: 20,
+                    bottom: 10,
+                    child: Text(
+                      "Grand Indonesia",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black,
+                              offset: Offset.zero,
+                              blurRadius: 7,
+                            )
+                          ]),
+                    ),
                   )
-                : const Padding(padding: EdgeInsets.zero)
+                ],
+              ),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 5)),
+            Expanded(
+              child: RefreshIndicator(
+                child: _list(),
+                onRefresh: _refreshMenu,
+              ),
+            ),
           ],
-        ));
+        ),
+        iklan
+            ? Column(
+          children: [
+            const Padding(padding: EdgeInsets.only(top: 140)),
+            Padding(
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.65, bottom: 2),
+              child: TextButton(
+                child: Container(
+                  height: 25,
+                  width: 25,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    iklan = false;
+                    _iklanClose();
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.70,
+              height: MediaQuery.of(context).size.height * 0.40,
+              child: Image.asset(
+                "asset/image/iklan.jpg",
+                fit: BoxFit.fill,
+              ),
+            )
+          ],
+        )
+            : const Padding(padding: EdgeInsets.zero),
+        orderan ?
+        Positioned(
+            bottom: 5,
+            child:TextButton(
+              onPressed: () {  },
+              style: TextButton.styleFrom(
+                primary: Colors.black87
+              ),
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                decoration: BoxDecoration(
+                    color: ColorBased.success,
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.85,
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.shopping_basket),
+                        const Padding(padding: EdgeInsets.only(left: 10)),
+                        Text(
+                            "Order Quantity \n${dataOrder.length} item(s)"
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Rp. ${formatter.format(totalOrder)}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    )
+
+                  ],
+                ),
+              ),
+            )
+        ) : const Text(''),
+
+
+      ],
+    );
   }
 
   _list() {
@@ -246,7 +314,7 @@ class _OrderPage extends State<OrderPage> {
                         Align(
                           alignment: Alignment.topLeft,
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.43,
                             height: MediaQuery.of(context).size.height * 0.05,
                             child: SizedBox(
                               child: Text(
@@ -265,7 +333,7 @@ class _OrderPage extends State<OrderPage> {
                             child: SizedBox(
                               child: Text(
                                 datas[index]['desk'],
-                                maxLines: 3,
+                                maxLines: 4,
                                 style: const TextStyle(fontSize: 10),
                               ),
                             ),
@@ -275,10 +343,10 @@ class _OrderPage extends State<OrderPage> {
                     ),
                     Stack(
                       children: [
-                        Positioned(
-                          right: 12,
+                        Align(
+                          alignment: AlignmentDirectional.topEnd,
                           child: Text(
-                            formatter.format(datas[index]['harga']).toString(),
+                            "Rp. ${formatter.format(datas[index]['harga'])}",
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                             textAlign: TextAlign.right,
                           ),
@@ -287,7 +355,8 @@ class _OrderPage extends State<OrderPage> {
                           alignment: Alignment.bottomRight,
                           child: TextButton(
                               onPressed: (() {
-                                _add();
+                                // print(datas[index]);
+                                _add(datas[index]);
                               }),
                               child: Container(
                                 height: 20,

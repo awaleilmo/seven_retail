@@ -1,4 +1,7 @@
 import "package:flutter/material.dart";
+import 'package:intl/intl.dart';
+
+var formatter = NumberFormat('#,##0.###;#,##0.###-');
 
 class SlideRightRoute extends PageRouteBuilder {
   final Widget page;

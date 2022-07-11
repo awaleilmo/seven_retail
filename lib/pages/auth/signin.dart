@@ -30,6 +30,8 @@ class _SignInpage extends State<SignInpage> {
       if(maps[i]["email"] == email.text){
         if(maps[i]["password"] == pass.text){
           myData.add(maps[i]);
+          String JsonEncode = jsonEncode(maps[i]);
+          prefs.setString("userLogin", JsonEncode);
           prefs.setBool("login", true);
         }else{
           const snackBar = SnackBar(

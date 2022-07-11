@@ -45,10 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-            body: PageStorage(
-              bucket: bucket,
-              child: _pages[_selectIndex],
-            ),
+            body: _pages.elementAt(_selectIndex),
             bottomNavigationBar: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
