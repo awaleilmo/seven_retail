@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seven_retail/config/Configuration.dart';
+import 'package:seven_retail/pages/auth/signin.dart';
+import 'package:seven_retail/pages/bill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
@@ -39,12 +41,12 @@ class _OrderPage extends State<OrderPage> {
     }
   }
 
-  Future<Null> _iklanClose() async {
+  Future<void> _iklanClose() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('iklan', false);
   }
 
-  Future<Null> _refreshMenu() async {
+  Future<void> _refreshMenu() async {
     if (!_loadingMore) {
       setState(() {
         _loadingMore = true;
@@ -60,6 +62,14 @@ class _OrderPage extends State<OrderPage> {
     }
   }
 
+  Future<void> _add() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool login = prefs.getBool('login') ?? false;
+    Navigator.of(context).push(
+      FadeRoute(page: login ? BillPage() : SignInpage()),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +77,7 @@ class _OrderPage extends State<OrderPage> {
     menus();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) ;
+          _scrollController.position.maxScrollExtent);
     });
   }
 
@@ -85,9 +95,7 @@ class _OrderPage extends State<OrderPage> {
             },
           ),
           title: const Text("Order"),
-          // bottom: PreferredSize(
-          //   preferredSize: const Size.fromHeight(144.0),
-          // ),
+          backgroundColor: Colors.white,
         ),
         body: Stack(
           alignment: AlignmentDirectional.center,
@@ -155,29 +163,33 @@ class _OrderPage extends State<OrderPage> {
             iklan
                 ? Column(
                     children: [
-                      TextButton(
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(50),
+                      const Padding(padding: EdgeInsets.only(top: 140)),
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.65, bottom: 2),
+                        child: TextButton(
+                          child: Container(
+                            height: 25,
+                            width: 25,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.white,
-                          ),
+                          onPressed: () {
+                            setState(() {
+                              iklan = false;
+                              _iklanClose();
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            iklan = false;
-                            _iklanClose();
-                          });
-                        },
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        height: MediaQuery.of(context).size.height * 0.60,
+                        width: MediaQuery.of(context).size.width * 0.70,
+                        height: MediaQuery.of(context).size.height * 0.40,
                         child: Image.asset(
                           "asset/image/iklan.jpg",
                           fit: BoxFit.fill,
@@ -198,15 +210,7 @@ class _OrderPage extends State<OrderPage> {
         if (index == datas.length) {
           return LoadingProgress();
         } else {
-          return InkWell(
-            onTap: () {
-              // Navigator.push(context, SlideRightRoute(page: ArtikelPage(
-              //     id: Peng[index]['id'],
-              //     judul: Judul = 'Pojok Warta LH',
-              //     tipe: 1)));
-              print('ok');
-            },
-            child: Container(
+          return Container(
               margin: const EdgeInsets.only(bottom: 20),
               width: MediaQuery.of(context).size.width * 0.90,
               height: MediaQuery.of(context).size.height * 0.15,
@@ -237,60 +241,74 @@ class _OrderPage extends State<OrderPage> {
                     const Padding(
                       padding: EdgeInsets.only(left: 5),
                     ),
-                    Column(
+                    Stack(
                       children: <Widget>[
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.40,
-                          height: MediaQuery.of(context).size.height * 0.05,
+                        Align(
+                          alignment: Alignment.topLeft,
                           child: SizedBox(
-                            child: Text(
-                              datas[index]['nama'],
-                              maxLines: 2,
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            child: SizedBox(
+                              child: Text(
+                                datas[index]['nama'],
+                                maxLines: 2,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.40,
-                          height: MediaQuery.of(context).size.height * 0.05,
+                        Align(
+                          alignment: Alignment.centerLeft,
                           child: SizedBox(
-                            child: Text(
-                              datas[index]['desk'],
-                              maxLines: 2,
-                              style: const TextStyle(fontSize: 10),
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            child: SizedBox(
+                              child: Text(
+                                datas[index]['desk'],
+                                maxLines: 3,
+                                style: const TextStyle(fontSize: 10),
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
-                    Column(
+                    Stack(
                       children: [
-                        Text(
-                          formatter.format(datas[index]['harga']).toString(),
-                          style: TextStyle(fontSize: 12),
+                        Positioned(
+                          right: 12,
+                          child: Text(
+                            formatter.format(datas[index]['harga']).toString(),
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.right,
+                          ),
                         ),
-                        const Padding(padding: EdgeInsets.only(top: 30)),
-                        TextButton(
-                            onPressed: (() {}),
-                            child: Container(
-                              height: 20,
-                              width: 40,
-                              alignment: AlignmentDirectional.center,
-                              decoration: BoxDecoration(
-                                  color: ColorBased.primary,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: const Text(
-                                "Add",
-                                style: TextStyle(
-                                    fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
-                              ),
-                            ))
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: TextButton(
+                              onPressed: (() {
+                                _add();
+                              }),
+                              child: Container(
+                                height: 20,
+                                width: 40,
+                                alignment: AlignmentDirectional.center,
+                                decoration: BoxDecoration(
+                                    color: ColorBased.primary,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: const Text(
+                                  "Add",
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              )),
+                        ),
                       ],
                     )
                   ],
                 ),
               ),
-            ),
-          );
+            );
         }
       },
       controller: _scrollController,

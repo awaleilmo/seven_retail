@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:seven_retail/config/Configuration.dart';
+import 'package:seven_retail/pages/auth/signin.dart';
 import 'package:seven_retail/pages/bill.dart';
 import 'package:seven_retail/pages/order.dart';
 import 'package:seven_retail/pages/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -16,19 +18,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectIndex = 0;
-  final PageStorageBucket bucket = PageStorageBucket();
+  bool logins = false;
 
+  final PageStorageBucket bucket = PageStorageBucket();
+  void _startup() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool log = prefs.getBool('login') ?? false;
+    setState((){
+      logins = log;
+    });
+  }
   void _navigateBottomBar(int index) {
     setState(() {
       _selectIndex = index;
     });
   }
 
-  final List<Widget> _pages = [const OrderPage(), BillPage(), ProfilePage()];
-
-  _goBack(BuildContext context) {
-    Navigator.pop(context);
-  }
+  final List<Widget> _pages = [
+    const OrderPage(),
+    BillPage(),
+    ProfilePage(),
+    const SignInpage()
+  ];
 
   @override
   Widget build(BuildContext context) {

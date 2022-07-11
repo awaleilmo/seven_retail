@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:seven_retail/config/Configuration.dart';
+import 'package:seven_retail/pages/auth/signup.dart';
 import 'package:seven_retail/pages/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,7 +57,16 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
         setState(() {
           isLoading = true;
         });
-        List<Map<String, Object>> map = [
+
+        var dataUser = [
+          {
+            'id':1,
+            'name': 'admins',
+            'email': 'admin@gmail.com',
+            'password': 'admin1234',
+          },
+        ];
+        var map = [
           {
             'id':1,
             'nama': 'Maecanse',
@@ -102,17 +111,17 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
           }
         ];
         String rawJson = jsonEncode(map);
-
-
+        String Rawuser = jsonEncode(dataUser);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final rawJsons = prefs.getString('data') ?? '';
+        final rawJsons = prefs.getString('dataUser') ?? '';
         prefs.setBool('iklan', true);
         if(rawJsons == ''){
           prefs.setString('data', rawJson);
+          prefs.setString('dataUser', Rawuser);
         }
+        print(rawJsons);
         // List<dynamic> maps = jsonDecode(rawJsons);
         bool? login = prefs.getBool('login');
-        print(rawJsons);
         startSplashScreen();
         if (login == true) {
           isLoading = false;
@@ -170,7 +179,6 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
     return Timer(durasi, (){
       Navigator.of(context).pushReplacement(
         ScaleRoute(page: const MyHomePage()),
-        // ScaleRoute(page: autol ? HomePage() : Utama()),
       );
     });
   }
