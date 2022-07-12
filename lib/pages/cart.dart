@@ -290,18 +290,14 @@ class _CartPage extends State<CartPage>{
                           )
                       ),
                       Expanded(
-                          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Padding(padding: const EdgeInsets.symmetric(vertical: 10),
-                                  child: Image.asset(val['barang']['image'],
-                                    width: 95,
-                                    height: 95,),
-                                ),
-                              ],
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                                  child: Padding(padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                      child: Image.asset(val['barang']['image'],
+                                        width: 95,
+                                        height: 95,),
+                                )
                             ),
-                          )
                       )
                     ],
                   ),
@@ -330,13 +326,12 @@ class _CartPage extends State<CartPage>{
                                 }),
                                 child: const Icon(Icons.remove_circle)
                             ),
-                            const Padding(padding: EdgeInsets.only(left: 3)),
-                            Text(
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 15),
+                            child: Text(
                               val['qty'].toString(),
-                              textAlign: TextAlign.justify,
+                              textAlign: TextAlign.center,
                               style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const Padding(padding: EdgeInsets.only(left: 3)),
+                            ),),
                             TextButton(
                                 onPressed:((){
                                   if(val['qty'] >= 0) {

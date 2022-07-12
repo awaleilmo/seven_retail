@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:seven_retail/pages/bill.dart';
+import 'package:seven_retail/pages/biling.dart';
+import 'package:seven_retail/pages/billdetail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/Configuration.dart';
@@ -63,7 +64,7 @@ class _Payment extends State<Payment> {
     prefs.setString('bill', jsonEncode(dataBill));
     prefs.setString('order', jsonEncode(news));
     Navigator.of(context).pushReplacement(
-      FadeRoute(page: BillPage())
+      FadeRoute(page: const BilingPage())
     );
   }
 

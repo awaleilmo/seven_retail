@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/auth/signup.dart';
@@ -9,6 +10,11 @@ import 'package:seven_retail/pages/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]
+  );
+
   runApp(const MyApp());
 }
 

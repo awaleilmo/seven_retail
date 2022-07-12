@@ -87,7 +87,7 @@ class _SignUpPage extends State<SignUpPage> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: _body(),
+      body: SingleChildScrollView(child:_body()),
     );
   }
 

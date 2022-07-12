@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/auth/signin.dart';
-import 'package:seven_retail/pages/bill.dart';
+import 'package:seven_retail/pages/biling.dart';
+import 'package:seven_retail/pages/billdetail.dart';
 import 'package:seven_retail/pages/order.dart';
 import 'package:seven_retail/pages/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -36,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const OrderPage(),
-    BillPage(),
-    ProfilePage(),
+    const BilingPage(),
+    const ProfilePage(),
     const SignInpage()
   ];
 

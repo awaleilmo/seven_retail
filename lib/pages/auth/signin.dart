@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -84,7 +83,7 @@ class _SignInpage extends State<SignInpage> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: _body(),
+      body: SingleChildScrollView(child:_body()),
     );
   }
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/auth/signin.dart';
-import 'package:seven_retail/pages/bill.dart';
+import 'package:seven_retail/pages/billdetail.dart';
 import 'package:seven_retail/pages/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
