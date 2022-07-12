@@ -70,7 +70,6 @@ class _CartPage extends State<CartPage>{
       "grandtotal":total+1000+2500,
       "payment":''
     };
-    // print(data);
     Navigator.of(context).push(
       FadeRoute(page: Payment(datas: data))
     );
@@ -93,7 +92,7 @@ class _CartPage extends State<CartPage>{
       }
     }
     String raws = jsonEncode(dataOrder);
-    prefs.setString('data', raws);
+    prefs.setString('order', raws);
     setState((){
       total = ttl;
     });

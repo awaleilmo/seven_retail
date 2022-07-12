@@ -120,8 +120,6 @@ class _SplashScreenPageState extends State<SplashScreenPage>{
           prefs.setString('data', rawJson);
           prefs.setString('dataUser', Rawuser);
         }
-        print(rawJsons);
-        // List<dynamic> maps = jsonDecode(rawJsons);
         bool? login = prefs.getBool('login');
         startSplashScreen();
         if (login == true) {

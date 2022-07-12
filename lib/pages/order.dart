@@ -19,7 +19,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPage extends State<OrderPage> {
-  List datas = [], dataOrder = [];
+  var datas = [], dataOrder = [];
   int totalOrder = 0;
   bool iklan = false, orderan = false;
   final ScrollController _scrollController = ScrollController();
@@ -32,7 +32,8 @@ class _OrderPage extends State<OrderPage> {
         _loadingMore = true;
       });
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final rawJsons = prefs.getString('data') ?? '';
+      final rawMenu = prefs.getString('data') ?? '';
+      var jsson = jsonDecode(rawMenu);
       bool? login = prefs.getBool('login');
       final rawUser = prefs.getString('userLogin');
       final rawOrder = prefs.getString('order');
@@ -44,8 +45,7 @@ class _OrderPage extends State<OrderPage> {
           length++;
         }
       }
-      List<dynamic> jsson = jsonDecode(rawJsons);
-      var data = jsson;
+
       setState(() {
         if(login == true && length > 0){
           orderan = true;
@@ -56,7 +56,7 @@ class _OrderPage extends State<OrderPage> {
         }
         iklan = prefs.getBool('iklan')!;
         _loadingMore = false;
-        datas.addAll(data);
+        datas = jsson;
       });
     }
   }
@@ -185,6 +185,7 @@ class _OrderPage extends State<OrderPage> {
                 onRefresh: _refreshMenu,
               ),
             ),
+            orderan ? const Padding(padding: EdgeInsets.only(top: 30)) : const Padding(padding: EdgeInsets.zero),
           ],
         ),
         iklan
@@ -277,7 +278,7 @@ class _OrderPage extends State<OrderPage> {
 
   _list() {
     return ListView.builder(
-      itemCount: datas == null ? 2 : datas.length,
+      itemCount: datas.isEmpty ? 0 : datas.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         if (index == datas.length) {
@@ -307,7 +308,7 @@ class _OrderPage extends State<OrderPage> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(2),
                             image: DecorationImage(
-                                image: AssetImage(datas[index]['image']),
+                                image: AssetImage(datas[index]['image'] ?? 'asset/image/menu.jpg'),
                                 fit: BoxFit.fill)),
                       ),
                     ),
@@ -323,7 +324,7 @@ class _OrderPage extends State<OrderPage> {
                             height: MediaQuery.of(context).size.height * 0.05,
                             child: SizedBox(
                               child: Text(
-                                datas[index]['nama'],
+                                datas[index]['nama'] ?? 'ok',
                                 maxLines: 2,
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
@@ -337,7 +338,7 @@ class _OrderPage extends State<OrderPage> {
                             height: MediaQuery.of(context).size.height * 0.05,
                             child: SizedBox(
                               child: Text(
-                                datas[index]['desk'],
+                                datas[index]['desk'] ?? 'oks',
                                 maxLines: 4,
                                 style: const TextStyle(fontSize: 10),
                               ),
@@ -351,7 +352,7 @@ class _OrderPage extends State<OrderPage> {
                         Align(
                           alignment: AlignmentDirectional.topEnd,
                           child: Text(
-                            "Rp. ${formatter.format(datas[index]['harga'])}",
+                            "Rp. ${formatter.format(datas[index]['harga'] ?? 0)}",
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                             textAlign: TextAlign.right,
                           ),
@@ -360,7 +361,6 @@ class _OrderPage extends State<OrderPage> {
                           alignment: Alignment.bottomRight,
                           child: TextButton(
                               onPressed: (() {
-                                // print(datas[index]);
                                 _add(datas[index]);
                               }),
                               child: Container(
