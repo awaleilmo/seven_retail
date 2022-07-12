@@ -47,7 +47,7 @@ class _CartPage extends State<CartPage>{
     var dataUser = rawJsons != null ? jsonDecode(rawJsons): [],
         dataOrder = rawJsons2 != null ? jsonDecode(rawJsons2): [],
         dataBill = rawJsons3 != null ? jsonDecode(rawJsons3): [],
-        filter = [], news =[];
+        filter = [];
     int id = 1;
     for(int i =0; i < dataOrder.length; i++){
       if(dataUser['id'] == dataOrder[i]['user_id']){
@@ -56,7 +56,7 @@ class _CartPage extends State<CartPage>{
     }
     for(int i  = 0; i < dataBill.length; i++){
       if(dataBill.length == i+1){
-        id = dataBill[i]['id']+1;
+        id = dataBill[i]['id'] + 1;
       }
     }
     var data = {
@@ -70,8 +70,7 @@ class _CartPage extends State<CartPage>{
       "grandtotal":total+1000+2500,
       "payment":''
     };
-
-    prefs.setString('bill', jsonEncode(data));
+    // print(data);
     Navigator.of(context).push(
       FadeRoute(page: Payment(datas: data))
     );
