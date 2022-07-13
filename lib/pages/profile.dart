@@ -22,7 +22,7 @@ class _ProfilePage extends State<ProfilePage> {
     bool? login = prefs.getBool("login");
     final userData = prefs.getString("userLogin");
     if (login == false) {
-      Navigator.of(context).push(FadeRoute(page: const SignInpage()));
+      // Navigator.of(context).push(FadeRoute(page: const SignInpage()));
     }
     setState((){
       datas = jsonDecode(userData!);

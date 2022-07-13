@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:seven_retail/config/Configuration.dart';
 import 'package:seven_retail/pages/auth/signin.dart';
 import 'package:seven_retail/pages/biling.dart';
-import 'package:seven_retail/pages/billdetail.dart';
 import 'package:seven_retail/pages/order.dart';
 import 'package:seven_retail/pages/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -24,9 +23,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageStorageBucket bucket = PageStorageBucket();
   void _startup() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool log = prefs.getBool('login') ?? false;
+    bool? log = prefs.getBool('login');
     setState((){
-      logins = log;
+      logins = log!;
     });
   }
   void _navigateBottomBar(int index) {
@@ -35,7 +34,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  final List<Widget> _pages = [
+  @override
+  void initState() {
+    _startup();
+    super.initState();
+  }
+
+  final _pages = <Widget>[
     const OrderPage(),
     const BilingPage(),
     const ProfilePage(),
@@ -46,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-            body: _pages.elementAt(_selectIndex),
+          // body:    ,
+            body:IndexedStack(index: logins == false ? _selectIndex == 2 ? 3 : _selectIndex:_selectIndex,children: _pages,),
             bottomNavigationBar: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -60,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SafeArea(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
                   child: GNav(
                     rippleColor: Colors.grey[300]!,
                     hoverColor: Colors.grey[100]!,
@@ -89,23 +95,23 @@ class _MyHomePageState extends State<MyHomePage> {
           await showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: const Text("Anda akan keluar"),
-                    content: const Text("Anda yakin untuk keluar?"),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text("Ya",
-                            style: TextStyle(color: Colors.black38)),
-                        onPressed: () => exit(0),
-                      ),
-                      TextButton(
-                        child: const Text("Tidak"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          keluar = false;
-                        },
-                      ),
-                    ],
-                  ));
+                title: const Text("Anda akan keluar"),
+                content: const Text("Anda yakin untuk keluar?"),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text("Ya",
+                        style: TextStyle(color: Colors.black38)),
+                    onPressed: () => exit(0),
+                  ),
+                  TextButton(
+                    child: const Text("Tidak"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      keluar = false;
+                    },
+                  ),
+                ],
+              ));
           return keluar;
         });
   }

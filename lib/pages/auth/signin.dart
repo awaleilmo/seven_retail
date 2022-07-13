@@ -26,7 +26,7 @@ class _SignInpage extends State<SignInpage> {
     final rawJsons = prefs.getString('dataUser') ?? '';
     List<dynamic> maps = jsonDecode(rawJsons); var myData = [];
     for(int i=0; i < maps.length; i++){
-      if(maps[i]["email"] == email.text){
+      if(maps[i]["email"] == email.text.trim()){
         if(maps[i]["password"] == pass.text){
           myData.add(maps[i]);
           String JsonEncode = jsonEncode(maps[i]);
@@ -77,7 +77,9 @@ class _SignInpage extends State<SignInpage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pushReplacement(
+            FadeRoute(page: const MyHomePage())
+          ),
         ),
         title: const Text("Login"),
         backgroundColor: Colors.white,
